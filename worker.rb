@@ -12,7 +12,7 @@ end
 
 class AIWorker
   include Sidekiq::Worker
-  GIKOU_COMMAND = "sh dummy.sh"
+  GIKOU_COMMAND = "sh ../Gikou/run.sh"
 
   def perform(id, usi_seq, timeout_sec)
     @store = Store.new
@@ -22,17 +22,17 @@ class AIWorker
 
   def exec_ai(id, usi_seq, timeout_sec)
     Open3.popen3(GIKOU_COMMAND) do |stdin, stdout, _, thr|
-      Timeout.timeout(timeout_sec + 5) do
-        stdin.puts(usi_seq)
-        stdin.flush
-
-        begin
+      begin
+        Timeout.timeout(timeout_sec + 5) do
+          stdin.puts(usi_seq)
+          stdin.flush
           while line = stdout.gets.chomp
             append_result(id, line)
           end
-        rescue Timeout::Error
-          Process.kill("KILL", thr.pid)
         end
+      rescue Timeout::Error
+        # TODO: 子プロセスがゾンビ化する
+        Process.kill("TERM", thr.pid)
       end
     end
   end
