@@ -1,8 +1,9 @@
 require 'json'
+require './config'
 
 class Store
   def initialize
-    @redis = Redis.new(host: "localhost", port: 6379)
+    @redis = Redis.new(host: Config.get["redis"]["host"], port: Config.get["redis"]["port"])
   end
 
   def set(id, value)

@@ -1,0 +1,5 @@
+gikou_command: "docker run naoys/gikou:0.0.3"
+#gikou_command: "./../Gikou/run.sh"
+redis:
+  host: "localhost"
+  port: 6379

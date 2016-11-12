@@ -1,6 +1,7 @@
 require 'open3'
 require 'timeout'
 require './store'
+require './config'
 
 Sidekiq.configure_client do |config|
   config.redis = { :namespace => 'ai_worker', :size => 5 }
@@ -12,7 +13,7 @@ end
 
 class AIWorker
   include Sidekiq::Worker
-  GIKOU_COMMAND = "sh ../Gikou/run.sh"
+  GIKOU_COMMAND = Config.get["gikou_command"]
 
   def perform(id, usi_seq, timeout_sec)
     @store = Store.new
