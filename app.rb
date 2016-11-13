@@ -25,6 +25,7 @@ def exec_ai(usi_seq, timeout_sec)
 end
 
 get '/' do
+  headers 'Access-Control-Allow-Origin' => '*'
   sfen  = params['sfen']
   moves = params['moves']
   time  = (params['time_sec'] || '10') + '000'
@@ -35,5 +36,6 @@ get '/' do
 end
 
 get '/results/:id' do |id|
+  headers 'Access-Control-Allow-Origin' => '*'
   Store.new.get(id)
 end

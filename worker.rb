@@ -27,13 +27,15 @@ class AIWorker
         Timeout.timeout(timeout_sec + 5) do
           stdin.puts(usi_seq)
           stdin.flush
-          while line = stdout.gets.chomp
+          while line = stdout.gets&.chomp
             append_result(id, line)
           end
         end
       rescue Timeout::Error
         # TODO: 子プロセスがゾンビ化する
-        Process.kill("TERM", thr.pid)
+        stdin.puts("quit")
+        stdin.flush
+        # Process.kill("KILL", thr.pid)
       end
     end
   end
